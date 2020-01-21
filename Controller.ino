@@ -28,7 +28,7 @@ CRGB leds[NUM_LEDS];
 #define START_MARKER 0x01
 #define END_MARKER 0x02
 
-void addByte(byte rb) {
+void addByte(boolean newPacket, byte rb) {
   static enum colors {
     red,
     green,
@@ -37,16 +37,18 @@ void addByte(byte rb) {
   } color = red;
   static int ledNdx = 0;
 
-  // every 100 calls to this function, reset
-  // FIXME: there has to be a better way
-  ledNdx = (ledNdx >= 100) ? 0 : ledNdx;
+  if (newPacket == true) {
+    ledNdx = 0;
+    color = red;
+  }
+  else {
+    leds[ledNdx][color] = rb;
 
-  leds[ledNdx][color] = rb;
-
-  color = (color + 1) % numColors;
-  // if color is now red, it is time for a new LED
-  if (color == red) {
-    ledNdx++;
+    color = (color + 1) % numColors;
+    // if color is now red, it is time for a new LED
+    if (color == red) {
+      ledNdx++;
+    }
   }
 }
 
@@ -66,36 +68,36 @@ void processByte(byte rb) {
   // waiting for a control byte
   case CONTROL:
     packet_state = (rb == CONTROL_BYTE) ? CONTROL_MODIFIER : CONTROL_BYTE;
-    break;
+  break;
 
   // take action according to control modifier
   case CONTROL_MODIFIER:
     switch (rb) {
     case LITERAL_CONTROL_BYTE_MODIFIER:
-      addByte(rb);
+      addByte(false, rb);
       packet_state = DATA;
-      break;
+    break;
 
     case START_MARKER:
       packet_state = DATA;
-      break;
+      addByte(true, 0x00);
+    break;
 
     case END_MARKER:
       displayFrame();
       packet_state = CONTROL;
-      break;
+    break;
     }
     break;
 
   case DATA:
     if (rb == CONTROL_BYTE) {
       packet_state = CONTROL_MODIFIER;
-      break;
     }
     else {
-      addByte(rb);
-      break;
+      addByte(false, rb);
     }
+  break;
   }
 }
 

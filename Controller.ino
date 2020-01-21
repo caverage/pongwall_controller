@@ -17,16 +17,16 @@ Globals:
 #define NUM_LEDS 100
 
 CRGB leds[NUM_LEDS];
-const byte BYTES_PER_LED = 3;
+#define BYTES_PER_LED 3
 
 
 // PongWall Serial Protocol stuff
-const byte CONTROL_BYTE = 0x10;
+#define CONTROL_BYTE 0x10
 
 // Control Modifiers
-const byte LITERAL_CONTROL_BYTE_MODIFIER = CONTROL_BYTE;
-const byte START_MARKER = 0x01;
-const byte END_MARKER = 0x02;
+#define LITERAL_CONTROL_BYTE_MODIFIER CONTROL_BYTE
+#define START_MARKER 0x01
+#define END_MARKER 0x02
 
 void addByte(byte rb) {
   static enum colors {
@@ -37,18 +37,17 @@ void addByte(byte rb) {
   } color = red;
   static int ledNdx = 0;
 
+  // every 100 calls to this function, reset
+  // FIXME: there has to be a better way
   ledNdx = (ledNdx >= 100) ? 0 : ledNdx;
 
-  // leds[ledNdx][color] = rb;
-  // leds[ledNdx] = CRGB(0x05, 0x05, 0x05);
-
+  leds[ledNdx][color] = rb;
 
   color = (color + 1) % numColors;
   // if color is now red, it is time for a new LED
   if (color == red) {
     ledNdx++;
   }
-  // ledNdx = (color == red) ? ledNdx++ : ledNdx;
 }
 
 void displayFrame() {
@@ -103,7 +102,9 @@ void processByte(byte rb) {
 void setup() {
   Serial.begin(115200);
 
+  // initialize FastLED
   FastLED.addLeds<WS2811, DATA_PIN>(leds, NUM_LEDS);
+
   // blank out display
   fill_solid(leds, 100, CRGB::Black);
   FastLED.show();

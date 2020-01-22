@@ -102,7 +102,7 @@ void processByte(byte rb) {
 }
 
 void setup() {
-  Serial.begin(115200);
+  Serial.begin(9600);
 
   // initialize FastLED
   FastLED.addLeds<WS2811, DATA_PIN>(leds, NUM_LEDS);

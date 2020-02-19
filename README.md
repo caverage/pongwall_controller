@@ -1,5 +1,12 @@
 # Controller
 
+## Initial Setup
+1. Install `arduio-cli`
+2. `arduino-cli core update-index`
+3. `. build_commands`
+
+Then run `compile && upload` to upload the code.
+
 ## Protocol Specification
 
 ### Packets

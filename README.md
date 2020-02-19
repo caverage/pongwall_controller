@@ -9,7 +9,7 @@ All data is encapsulated in packets. This includes `ack` messages, video frames,
 
 *Control Modifier:* The byte immediately following the Control Byte is known as the Control Modifier. A Control Modifier MUST be preceded by a Control Byte.
 
-*Control Code:* A Control Byte followed by a Control Modifier is refered to as a Control Code. Control Codes are refered to by the Control Modifier. E.G. the Control Code `0xAA` is `0x10 0xAA`.
+*Control Code:* A Control Byte followed by a Control Modifier is referred to as a Control Code. Control Codes are referred to by the Control Modifier. E.G. the Control Code `0xAA` is `0x10 0xAA`.
 
 *Start Marker:* Packets MUST begin with the Control Code `0x01`, known as the Start Marker.
 
